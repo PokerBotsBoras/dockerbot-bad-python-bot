@@ -33,17 +33,17 @@ while True:
         if to_call == 0:
             action = {
                 "ActionType": 1 if random.random() < 0.7 else 2,
-                "Amount": int(min_raise) if random.random() > 0.7 else None
+                "Amount": int(min_raise) if random.random() > 0.7 else 30
             }
         else:
             r = random.random()
             if r < 0.1:
                 action = { "ActionType": 0 , "Amount": None}
             elif r < 0.8:
-                action = { "ActionType": 1, "Amount": None }
+                action = { "ActionType": 1, "Amount": to_call }
             else:
                 action = { "ActionType": 2, "Amount": int(min_raise) }
 
         write_output(action)
     except Exception as e:
-        write_output({"ActionType": "Fold"})  # fallback on error
+        write_output({"ActionType": 0, "Amount": None })  # fallback on error
