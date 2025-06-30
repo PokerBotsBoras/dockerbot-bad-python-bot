@@ -2,7 +2,8 @@ name: Build and Publish Docker Bot
 
 on:
   push:
-    branches: [main]
+    tags:
+      - 'v*'
   release:
     types: [published]
 
@@ -22,7 +23,11 @@ jobs:
 
       - name: Build and push image
         run: |
-          IMAGE_NAME=ghcr.io/${{ github.repository_owner }}/$(basename ${{ github.repository }})-bot
+          REPO_NAME=$(basename ${{ github.repository }})
+          if [[ $REPO_NAME != dockerbot-* ]]; then
+            REPO_NAME="dockerbot-$REPO_NAME"
+          fi
+          IMAGE_NAME=ghcr.io/${{ github.repository_owner }}/$REPO_NAME
           TAG=$(echo $GITHUB_REF_NAME | tr '/' '-')
           docker build -t $IMAGE_NAME:$TAG .
           docker push $IMAGE_NAME:$TAG
